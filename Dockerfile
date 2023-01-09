@@ -16,7 +16,7 @@ RUN yarn build
 
 FROM nginx:1.12-alpine
 
-COPY --from=builder /app/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/out /usr/share/nginx/html
 
 EXPOSE 3001
