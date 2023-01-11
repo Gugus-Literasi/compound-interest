@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import { TextInput, Text, Button, Flex } from '@mantine/core';
-// import styles from '../styles/Home.module.css'
+import { TextInput, Table, Text, Button, Flex } from '@mantine/core';
+
+function comp(principal: number, interest: number, time: number) {
+  const cent = interest / 100;
+  return principal * Math.pow(1 + cent, time);
+}
 
 export default function Home() {
 
@@ -11,11 +13,24 @@ export default function Home() {
   const [bungaPertahun, setBungaPertahun] = useState<number>(0);
   const [lamaSimpan, setLamaSimpan] = useState<number>(0);
   const [akumulasi, setAkumulasi] = useState<number>(0);
+  const [rows, setRows] = useState<any>();
 
   const hitung = () => {
-    setAkumulasi(
-      nominal * Math.pow(1 + (bungaPertahun / 100) / 12, 12 * lamaSimpan)
-    );
+    setAkumulasi(() => comp(nominal, bungaPertahun, lamaSimpan));
+
+    setRows(() => Array.from(Array(lamaSimpan).keys())
+    .map((i) => {
+      const seq = i + 1;
+      const acc = comp(nominal, bungaPertahun, seq);
+      return (
+        <tr key={i}>
+          <td>{seq}</td>
+          <td>{acc.toFixed(2)}</td>
+          <td>{(acc - nominal).toFixed(2)}</td>
+        </tr>
+      )
+    }))
+
   }
 
   return (
@@ -69,6 +84,17 @@ export default function Home() {
             Hitung
           </Button>
         </Flex>
+
+        <Table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Akumulasi</th>
+              <th>Bunga Bersih</th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
       </main>
     </>
   )
