@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head'
 import { TextInput, Table, Text, Button, Flex } from '@mantine/core';
 
@@ -29,9 +29,14 @@ export default function Home() {
           <td>{(acc - nominal).toFixed(2)}</td>
         </tr>
       )
-    }))
-
+    }));
   }
+
+  useEffect(() => {
+    const docheight = document.documentElement.offsetHeight;
+    console.log('docheight', docheight)
+    window.parent.postMessage(docheight, "*");
+  }, [rows]);
 
   return (
     <>
